@@ -2,7 +2,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "gutils.h"
+#include <gutils.h>
 
 static std::string get_xdg_user_dir(const char*, const std::string, const std::string);
 

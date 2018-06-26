@@ -10,6 +10,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "../lib/gutils.h"
+#include <gutils.h>
 
 #endif /* INCLUDED_TEST */

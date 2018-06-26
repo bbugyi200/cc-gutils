@@ -8,7 +8,8 @@ add_library(imp_cpputest STATIC IMPORTED)
 set_property(TARGET imp_cpputest PROPERTY
              IMPORTED_LOCATION /usr/lib/libCppUTest.a)
 
-file(GLOB SOURCES "../lib/[^main]*.cc")
+file(GLOB SOURCES "../src/[^main]*.cc")
 file(GLOB TESTS "*.cc")
 add_executable(runtests ${SOURCES} ${TESTS})
+target_include_directories(runtests PUBLIC ../include)
 target_link_libraries(runtests imp_cpputest)
