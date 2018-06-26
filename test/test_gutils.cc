@@ -3,10 +3,14 @@
 static bool dir_exists(const char*);
 static void test_xdg_userdir(const char*, const char*);
 static std::string get_xdg_expected(const char*);
+static std::string get_xdg_runtime_expected();
 
 static const char *dirname = "/tmp/gutils_test_dir";
 static const char *project_name = "TEST";
 
+/****************
+*  create_dir  *
+****************/
 TEST_GROUP(create_dir)
 {
     void setup() {
@@ -26,7 +30,9 @@ static bool dir_exists(const char *dirname) {
     return stat(dirname, &sb) == 0 && S_ISDIR(sb.st_mode);
 }
 
-
+/*****************
+*  get_xdg_dir  *
+*****************/
 TEST_GROUP(get_xdg_dir)
 {
 };
@@ -64,9 +70,22 @@ static std::string get_xdg_expected(const char *local_path) {
 TEST(get_xdg_dir, runtime)
 {
     std::string actual = gutils::get_xdg_dir(project_name, "runtime");
-
-    std::string expected = "/run/user/1000/";
-    expected.append(project_name);
+    std::string expected = get_xdg_runtime_expected();
 
     CHECK_EQUAL(expected, actual);
+}
+
+TEST(get_xdg_dir, init)
+{
+    gutils::init_xdg_dir(project_name, "runtime");
+    std::string expected = get_xdg_runtime_expected();
+
+    CHECK_TRUE(dir_exists(expected.c_str()));
+    rmdir(expected.c_str());
+}
+
+static std::string get_xdg_runtime_expected() {
+    std::string expected = "/run/user/1000/";
+    expected.append(project_name);
+    return expected;
 }
