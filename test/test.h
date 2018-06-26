@@ -1,5 +1,5 @@
-#ifndef INCLUDE_TEST
-#define INCLUDE_TEST
+#ifndef INCLUDED_TEST
+#define INCLUDED_TEST
 
 #include <string>
 
@@ -12,4 +12,4 @@
 
 #include "../lib/gutils.h"
 
-#endif /* INCLUDE_TEST */
+#endif /* INCLUDED_TEST */
