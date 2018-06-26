@@ -50,13 +50,13 @@ get_xdg_user_dir(const char *envvar, const std::string local_path,
 
     std::string xdg_path = "";
 
-    if (xdg_env_value == NULL) {
+    if (xdg_env_value) {
+        xdg_path += xdg_env_value;
+    } else {
         xdg_path += "/home/";
         xdg_path += user;
         xdg_path += "/";
         xdg_path += local_path;
-    } else {
-        xdg_path += xdg_env_value;
     }
 
     xdg_path += "/";

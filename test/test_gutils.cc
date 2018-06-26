@@ -25,7 +25,8 @@ TEST(create_dir, 1)
     CHECK_TRUE(dir_exists(dirname));
 }
 
-static bool dir_exists(const char *dirname) {
+static bool
+dir_exists(const char *dirname) {
     struct stat sb;
     return stat(dirname, &sb) == 0 && S_ISDIR(sb.st_mode);
 }
@@ -47,14 +48,16 @@ TEST(get_xdg_dir, data)
     test_xdg_userdir("data", ".local/share");
 }
 
-static void test_xdg_userdir(const char *dirtype, const char *local_path) {
+static void
+test_xdg_userdir(const char *dirtype, const char *local_path) {
     std::string expected = get_xdg_expected(local_path);
     std::string actual = gutils::get_xdg_dir(project_name, dirtype);
 
     CHECK_EQUAL(expected, actual);
 }
 
-static std::string get_xdg_expected(const char *local_path) {
+static std::string
+get_xdg_expected(const char *local_path) {
     const char *user = getenv("USER");
 
     std::string expected = "/home/";
@@ -84,7 +87,8 @@ TEST(get_xdg_dir, init)
     rmdir(expected.c_str());
 }
 
-static std::string get_xdg_runtime_expected() {
+static std::string
+get_xdg_runtime_expected() {
     std::string expected = "/run/user/1000/";
     expected.append(project_name);
     return expected;
