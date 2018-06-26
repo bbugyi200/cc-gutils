@@ -25,24 +25,33 @@ TEST_GROUP(get_xdg_dir)
 };
 
 static const char *project_name = "TEST";
-void test_xdg_userdir(const char *dirtype, const char *partial_path) {
+std::string get_xdg_expected(const char *local_path) {
     const char *user = getenv("USER");
-
-    std::string actual = gutils::get_xdg_dir(project_name, dirtype);
 
     std::string expected = "/home/";
     expected.append(user);
     expected.append("/");
-    expected.append(partial_path);
+    expected.append(local_path);
     expected.append("/");
     expected.append(project_name);
+
+    return expected;
+}
+
+static void test_xdg_userdir(const char *dirtype, const char *local_path) {
+    std::string expected = get_xdg_expected(local_path);
+    std::string actual = gutils::get_xdg_dir(project_name, dirtype);
 
     CHECK_EQUAL(expected, actual);
 }
 
-TEST(get_xdg_dir, userdirs)
+TEST(get_xdg_dir, config)
 {
     test_xdg_userdir("config", ".config");
+}
+
+TEST(get_xdg_dir, data)
+{
     test_xdg_userdir("data", ".local/share");
 }
 
