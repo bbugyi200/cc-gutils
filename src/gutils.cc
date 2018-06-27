@@ -6,19 +6,20 @@
 
 static std::string get_xdg_user_dir(const char*, const std::string, const std::string);
 
-void
-gutils::create_dir(std::string dirname) {
-    return create_dir(dirname.c_str());
-}
-
 /** Creates directory if it doesn't already exist. **/
-void
-gutils::create_dir(const char *dirname) {
+template<>
+void gutils::create_dir(const char *dirname) {
     struct stat st = {0};
     if (stat(dirname, &st) == -1) {
         mkdir(dirname, 0700);
     }
 }
+
+template<>
+void gutils::create_dir(const std::string dirname) {
+    return create_dir(dirname.c_str());
+}
+
 
 std::string
 gutils::init_xdg_dir(const std::string project_name, const std::string dirtype) {

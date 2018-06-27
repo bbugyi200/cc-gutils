@@ -5,8 +5,9 @@
 
 /** Global Utilities **/
 namespace gutils {
-    void create_dir(const char*);
-    void create_dir(std::string);
+    template <typename T>
+    void create_dir(const T);
+
     std::string init_xdg_dir(const std::string, const std::string);
     std::string get_xdg_dir(const std::string, const std::string);
 }
