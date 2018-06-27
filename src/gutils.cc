@@ -6,7 +6,6 @@
 
 static std::string get_xdg_user_dir(const char*, const std::string, const std::string);
 
-/** Creates directory if it doesn't already exist. **/
 void 
 gutils::create_dir(const char *dirname) {
     struct stat st = {0};
