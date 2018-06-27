@@ -7,16 +7,16 @@
 static std::string get_xdg_user_dir(const char*, const std::string, const std::string);
 
 /** Creates directory if it doesn't already exist. **/
-template<>
-void gutils::create_dir(const char *dirname) {
+void 
+gutils::create_dir(const char *dirname) {
     struct stat st = {0};
     if (stat(dirname, &st) == -1) {
         mkdir(dirname, 0700);
     }
 }
 
-template<>
-void gutils::create_dir(const std::string dirname) {
+void
+gutils::create_dir(const std::string dirname) {
     return create_dir(dirname.c_str());
 }
 
