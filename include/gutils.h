@@ -1,13 +1,18 @@
- #ifndef INCLUDED_GUTILS
+#ifndef INCLUDED_GUTILS
 #define INCLUDED_GUTILS
 
 #include <string>
 
-/** Global Utilities **/
 namespace gutils {
 
-template<typename T> void create_dir(const T);
+// Creates directory if it doesn't already exist.
+void create_dir(const char*);
+void create_dir(const std::string);
+
+// Returns XDG user directory. Creates the directory if it does not exist.
 std::string init_xdg_dir(const std::string, const std::string);
+
+// Returns XDG user directory.
 std::string get_xdg_dir(const std::string, const std::string);
 
 }  // namespace gutils
