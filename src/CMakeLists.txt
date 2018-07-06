@@ -1,5 +1,3 @@
-include(../shared.cmake)
-
 file(GLOB SOURCES "*.cc")
 add_library(gutils STATIC ${SOURCES})
 target_include_directories(gutils PUBLIC ../include)

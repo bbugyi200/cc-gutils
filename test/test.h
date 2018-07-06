@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "CppUTest/TestHarness.h"
-#include "CppUTestExt/MockSupport.h"
+#include "gtest/gtest.h"
+#include "gmock/gmock.h"
 
 #include <stdlib.h>
 #include <sys/stat.h>
