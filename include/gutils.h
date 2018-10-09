@@ -18,7 +18,6 @@ void die(const std::string);
 namespace gutils {
     
 // Predicate that indicates whether or not debugging mode is enabled.
-bool debugging_enabled(bool);
 bool debugging_enabled();
 
 // Enables debug mode if flag is 'true'.

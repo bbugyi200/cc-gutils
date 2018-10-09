@@ -5,22 +5,15 @@
 
 static std::string get_xdg_user_dir(const char*, const std::string, const std::string);
 
-bool gutils::debugging_enabled(bool debug_flag) {
-    static bool is_enabled;
-    if (!debug_flag) {
-        return is_enabled;
-    } else {
-        is_enabled = debug_flag;
-        return is_enabled;
-    }
-}
+static bool global_debug_flag;
+
 
 bool gutils::debugging_enabled() {
-    return debugging_enabled(false);
+    return global_debug_flag;
 }
 
 void gutils::set_debug_mode(bool debug_flag) {
-    debugging_enabled(debug_flag);
+    global_debug_flag = debug_flag;
     dmsg("Debug Mode Enabled");
 }
 
@@ -34,7 +27,6 @@ void gutils::create_dir(const char *dirname) {
 void gutils::create_dir(const std::string dirname) {
     return create_dir(dirname.c_str());
 }
-
 
 std::string gutils::init_xdg_dir(const std::string project_name, const std::string dirtype) {
     auto dirname = get_xdg_dir(project_name, dirtype);
