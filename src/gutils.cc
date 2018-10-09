@@ -3,57 +3,15 @@
 
 #include <gutils.h>
 
-static std::string get_xdg_user_dir(const char*, const std::string, const std::string);
-
-static bool global_debug_flag;
-
-
-bool gutils::debugging_enabled() {
-    return global_debug_flag;
-}
-
-void gutils::set_debug_mode(bool debug_flag) {
-    global_debug_flag = debug_flag;
-    dmsg("Debug Mode Enabled");
-}
-
-void gutils::create_dir(const char *dirname) {
-    struct stat st = {0};
-    if (stat(dirname, &st) == -1) {
-        mkdir(dirname, 0700);
-    }
-}
-
-void gutils::create_dir(const std::string dirname) {
-    return create_dir(dirname.c_str());
-}
-
-std::string gutils::init_xdg_dir(const std::string project_name, const std::string dirtype) {
-    auto dirname = get_xdg_dir(project_name, dirtype);
-    create_dir(dirname);
-    return dirname;
-}
-
-std::string gutils::get_xdg_dir(const std::string project_name, const std::string dirtype) {
-    if (dirtype == "config") {
-        return get_xdg_user_dir("XDG_CONFIG_HOME", ".config", project_name);
-    } else if (dirtype == "data") {
-        return get_xdg_user_dir("XDG_DATA_HOME", ".local/share", project_name);
-    } else if (dirtype == "runtime") {
-        std::string xdg_path = "/run/user/1000/";
-        xdg_path += project_name;
-        return xdg_path;
-    } else {
-        throw "Parameter @dirtype must be in ['config', 'data', 'runtime'].";
-    }
-}
-
-static std::string get_xdg_user_dir(const char *envvar, const std::string local_path,
-                                    const std::string project_name) {
+/**********************
+*  Static Functions  *
+**********************/
+static string get_xdg_user_dir(const char *envvar, const string local_path,
+                               const string project_name) {
     const char *user = getenv("USER");
     const char *xdg_env_value = getenv(envvar);
 
-    std::string xdg_path = "";
+    string xdg_path = "";
 
     if (xdg_env_value) {
         xdg_path += xdg_env_value;
@@ -68,3 +26,50 @@ static std::string get_xdg_user_dir(const char *envvar, const std::string local_
     xdg_path += project_name;
     return xdg_path;
 }
+
+/**********************
+*  gutils Namespace  *
+**********************/
+namespace gutils
+{
+
+bool debugging_enabled = false;
+
+
+void set_debug_mode(bool debug_flag) {
+    debugging_enabled = debug_flag;
+    dmsg("Debug Mode Enabled");
+}
+
+void create_dir(const string dirname) {
+    if (!path_exists(dirname)) {
+        mkdir(dirname.c_str(), 0700);
+    }
+}
+
+bool path_exists(const string dirname) {
+    struct stat st = {0};
+    return stat(dirname.c_str(), &st) != -1;
+}
+
+string init_xdg_dir(const string project_name, const string dirtype) {
+    auto dirname = get_xdg_dir(project_name, dirtype);
+    create_dir(dirname);
+    return dirname;
+}
+
+string get_xdg_dir(const string project_name, const string dirtype) {
+    if (dirtype == "config") {
+        return get_xdg_user_dir("XDG_CONFIG_HOME", ".config", project_name);
+    } else if (dirtype == "data") {
+        return get_xdg_user_dir("XDG_DATA_HOME", ".local/share", project_name);
+    } else if (dirtype == "runtime") {
+        string xdg_path = "/run/user/1000/";
+        xdg_path += project_name;
+        return xdg_path;
+    } else {
+        throw "Parameter @dirtype must be in ['config', 'data', 'runtime'].";
+    }
+}
+
+}  // namespace gutils
