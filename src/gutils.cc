@@ -5,6 +5,25 @@
 
 static std::string get_xdg_user_dir(const char*, const std::string, const std::string);
 
+bool gutils::debugging_enabled(bool debug_flag) {
+    static bool is_enabled;
+    if (!debug_flag) {
+        return is_enabled;
+    } else {
+        is_enabled = debug_flag;
+        return is_enabled;
+    }
+}
+
+bool gutils::debugging_enabled() {
+    return debugging_enabled(false);
+}
+
+void gutils::set_debug_mode(bool debug_flag) {
+    debugging_enabled(debug_flag);
+    dmsg("Debug Mode Enabled");
+}
+
 void gutils::create_dir(const char *dirname) {
     struct stat st = {0};
     if (stat(dirname, &st) == -1) {

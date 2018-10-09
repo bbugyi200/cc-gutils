@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 #define dmsg(x) \
-    if (debugging_enabled()) { \
+    if (gutils::debugging_enabled()) { \
         std::cout << "[DEBUG] " << x << std::endl; \
     }
 
@@ -14,11 +14,15 @@
 
 void die(const std::string, int);
 void die(const std::string);
-bool debugging_enabled(bool);
-bool debugging_enabled();
-void set_debug_mode(bool);
 
 namespace gutils {
+    
+// Predicate that indicates whether or not debugging mode is enabled.
+bool debugging_enabled(bool);
+bool debugging_enabled();
+
+// Enables debug mode if flag is 'true'.
+void set_debug_mode(bool);
 
 // Creates directory if it doesn't already exist.
 void create_dir(const char*);
