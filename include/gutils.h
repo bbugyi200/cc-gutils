@@ -51,25 +51,34 @@ string get_xdg_dir(string const, string const);
 /*******************
 *  Debug Helpers  *
 *******************/
+#define dmsg(...) DebugPrint::debug_print(__VA_ARGS__)
 #define dvmsg(x) dmsg(#x ": ", (x))
 
-template<class T>
-void debug_print(T&& x) {
-    std::cout << x << std::endl;
-}
+/*  Prints Message iff Debug Mode is Enabled
+ *
+ * Do not interface with this class directly. Use the `dmsg` macro.
+ * */
+class DebugPrint {
+    private:
+        template<class T>
+        static void _debug_print(T&& x) {
+            std::cout << x << std::endl;
+        }
 
-template<class T, class... V>
-void debug_print(T&& x, V&&... vargs) {
-    std::cout << x;
-    debug_print(vargs...);
-}
+        template<class T, class... V>
+        static void _debug_print(T&& x, V&&... vargs) {
+            std::cout << x;
+            _debug_print(vargs...);
+        }
 
-template<class... V>
-void dmsg(V&&... vargs) {
-    if (gutils::debugging_enabled) {
-        std::cout << "[DEBUG] ";
-        debug_print(vargs...);
-    }
-}
+    public:
+        template<class... V>
+        static void debug_print(V&&... vargs) {
+            if (gutils::debugging_enabled) {
+                std::cout << "[DEBUG] ";
+                _debug_print(vargs...);
+            }
+        }
+};
 
 #endif /* INCLUDED_GUTILS */
