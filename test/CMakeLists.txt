@@ -1,5 +1,7 @@
 find_package(Threads REQUIRED)
 
+include(../shared.cmake)
+
 # Enable ExternalProject CMake module
 include(ExternalProject)
 
@@ -43,5 +45,8 @@ file(GLOB SOURCES "../src/[^main]*.cc")
 file(GLOB TESTS "*.cc")
 add_executable(runtests ${SOURCES} ${TESTS})
 
+glib_opts(runtests)
 target_link_libraries(runtests libgtest libgmock)
+
 target_include_directories(runtests PUBLIC ../include)
+

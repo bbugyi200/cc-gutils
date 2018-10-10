@@ -6,10 +6,10 @@
 /**********************
 *  Static Functions  *
 **********************/
-static string get_xdg_user_dir(const char *envvar, const string local_path,
-                               const string project_name) {
-    const char *user = getenv("USER");
-    const char *xdg_env_value = getenv(envvar);
+static string get_xdg_user_dir(char const *envvar, string const local_path,
+                               string const project_name) {
+    char const *user = getenv("USER");
+    char const *xdg_env_value = getenv(envvar);
 
     string xdg_path = "";
 
@@ -41,24 +41,40 @@ void set_debug_mode(bool debug_flag) {
     dmsg("Debug Mode Enabled");
 }
 
-void create_dir(const string dirname) {
+void create_dir(string const dirname) {
     if (!path_exists(dirname)) {
         mkdir(dirname.c_str(), 0700);
     }
 }
 
-bool path_exists(const string dirname) {
+bool path_exists(string const dirname) {
     struct stat st = {0};
     return stat(dirname.c_str(), &st) != -1;
 }
 
-string init_xdg_dir(const string project_name, const string dirtype) {
+string read_file(string const filename) {
+    char *out;
+    GError *e = nullptr;
+    GIOChannel *f = g_io_channel_new_file(filename.c_str(), "r", &e);
+
+    if (!f) {
+        die("Failed to open file " + filename + ".");
+    }
+
+    if (g_io_channel_read_to_end(f, &out, nullptr, &e) != G_IO_STATUS_NORMAL) {
+        die("Unable to read file " + filename + ".");
+    }
+
+    return out;
+}
+
+string init_xdg_dir(string const project_name, string const dirtype) {
     auto dirname = get_xdg_dir(project_name, dirtype);
     create_dir(dirname);
     return dirname;
 }
 
-string get_xdg_dir(const string project_name, const string dirtype) {
+string get_xdg_dir(string const project_name, string const dirtype) {
     if (dirtype == "config") {
         return get_xdg_user_dir("XDG_CONFIG_HOME", ".config", project_name);
     } else if (dirtype == "data") {
