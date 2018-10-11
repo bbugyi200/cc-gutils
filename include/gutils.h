@@ -4,8 +4,11 @@
 /**************
 *  Includes  *
 **************/
+#include <fstream>
 #include <glib.h>
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <string>
 #include <unistd.h>
 
@@ -25,25 +28,26 @@ void die(string const);
 **********************/
 namespace gutils {
     
-// Indicates whether or not debugging mode is enabled.
-extern bool debugging_enabled;
+/* Indicates which debugging mode (if any) is enabled. */
+extern bool debug;
+extern bool verbose;
 
-// Enables debug mode if flag is 'true'.
-void set_debug_mode(bool);
+/* Enables debug mode if flag is 'true'. */
+void set_debug_mode(bool, bool);
 
-// Creates directory if it doesn't already exist.
+/* Creates directory if it doesn't already exist. */
 void create_dir(string const);
 
-// Predicate that checks if directory exists.
+/* Predicate that checks if directory exists. */
 bool path_exists(string const);
 
-// Reads entire file contents into a string.
+/* Reads file contents into a string. */
 string read_file(string const);
 
-// Returns XDG user directory. Creates the directory if it does not exist.
+/* Returns XDG user directory. Creates the directory if it does not exist. */
 string init_xdg_dir(string const, string const);
 
-// Returns XDG user directory.
+/* Returns XDG user directory. */
 string get_xdg_dir(string const, string const);
 
 }  // namespace gutils
@@ -51,12 +55,13 @@ string get_xdg_dir(string const, string const);
 /*******************
 *  Debug Helpers  *
 *******************/
-#define dmsg(...) DebugPrint::debug_print(__VA_ARGS__)
-#define dvmsg(x) dmsg(#x ": ", (x))
+#define DMSG(...) DebugPrint::debug_print("DEBUG", __VA_ARGS__)
+#define DVMSG(...) if (gutils::verbose) { DebugPrint::debug_print("VDEBUG", __VA_ARGS__); }
+#define DVAR(x) DVMSG(#x ": ", (x))
 
 /*  Prints Message iff Debug Mode is Enabled
  *
- * Do not interface with this class directly. Use the `dmsg` macro.
+ * Do not interface with this class directly. Use the `DMSG` macro.
  * */
 class DebugPrint {
     private:
@@ -73,12 +78,29 @@ class DebugPrint {
 
     public:
         template<class... V>
-        static void debug_print(V&&... vargs) {
-            if (gutils::debugging_enabled) {
-                std::cout << "[DEBUG] ";
+        static void debug_print(string const mode, V&&... vargs) {
+            if (gutils::debug) {
+                std::cout << "[" + mode + "] ";
                 _debug_print(vargs...);
             }
         }
+};
+
+/***********************************
+*  N-ary Tuples as Return Values  *
+***********************************/
+#define Unpack(x, y, fcall) \
+    auto TT = fcall; \
+    auto x = TT.first; \
+    auto y = TT.second; \
+
+template<class S, class T>
+class TwoTuple {
+    public:
+        S first;
+        T second;
+
+        TwoTuple(S s, T t) : first(s), second(t) {};
 };
 
 #endif /* INCLUDED_GUTILS */

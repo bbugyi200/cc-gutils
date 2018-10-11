@@ -33,12 +33,14 @@ static string get_xdg_user_dir(char const *envvar, string const local_path,
 namespace gutils
 {
 
-bool debugging_enabled = false;
+bool debug = false;
+bool verbose = false;
 
 
-void set_debug_mode(bool debug_flag) {
-    debugging_enabled = debug_flag;
-    dmsg("Debug Mode Enabled");
+void set_debug_mode(bool debug_flag, bool verbose_flag) {
+    debug = debug_flag;
+    verbose = verbose_flag;
+    DMSG("Debug Mode Enabled");
 }
 
 void create_dir(string const dirname) {
@@ -69,7 +71,7 @@ string read_file(string const filename) {
 }
 
 string init_xdg_dir(string const project_name, string const dirtype) {
-    auto dirname = get_xdg_dir(project_name, dirtype);
+    string dirname = get_xdg_dir(project_name, dirtype);
     create_dir(dirname);
     return dirname;
 }
