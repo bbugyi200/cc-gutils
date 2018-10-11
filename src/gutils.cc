@@ -40,13 +40,20 @@ bool verbose = false;
 void set_debug_mode(bool debug_flag, bool verbose_flag) {
     debug = debug_flag;
     verbose = verbose_flag;
-    DMSG("Debug Mode Enabled");
+    DMSG("Debug mode has been enabled.");
+    DVMSG("Verbose output has been enabled.");
 }
 
 void create_dir(string const dirname) {
     if (!path_exists(dirname)) {
         mkdir(dirname.c_str(), 0700);
     }
+}
+
+string toupper(string const s) {
+    string S = s;
+    std::transform(S.begin(), S.end(), S.begin(), ::toupper);
+    return S;
 }
 
 bool path_exists(string const dirname) {

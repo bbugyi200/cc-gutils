@@ -4,6 +4,7 @@
 /**************
 *  Includes  *
 **************/
+#include <algorithm>
 #include <fstream>
 #include <glib.h>
 #include <iostream>
@@ -11,6 +12,7 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
+#include <vector>
 
 /************************
 *  Using Declarations  *
@@ -32,11 +34,14 @@ namespace gutils {
 extern bool debug;
 extern bool verbose;
 
-/* Enables debug mode if flag is 'true'. */
-void set_debug_mode(bool, bool);
-
 /* Creates directory if it doesn't already exist. */
 void create_dir(string const);
+
+/* Returns XDG user directory. */
+string get_xdg_dir(string const, string const);
+
+/* Returns XDG user directory. Creates the directory if it does not exist. */
+string init_xdg_dir(string const, string const);
 
 /* Predicate that checks if directory exists. */
 bool path_exists(string const);
@@ -44,45 +49,48 @@ bool path_exists(string const);
 /* Reads file contents into a string. */
 string read_file(string const);
 
-/* Returns XDG user directory. Creates the directory if it does not exist. */
-string init_xdg_dir(string const, string const);
+/* Enables debug mode if flag is 'true'. */
+void set_debug_mode(bool, bool);
 
-/* Returns XDG user directory. */
-string get_xdg_dir(string const, string const);
+// convert string to uppercase
+string toupper(string const);
 
 }  // namespace gutils
 
-/*********************
-*  Debug Utilities  *
-*********************/
-#define DMSG(...) DebugPrint::debug_print("DEBUG", __VA_ARGS__)
-#define DVMSG(...) if (gutils::verbose) { DebugPrint::debug_print("VDEBUG", __VA_ARGS__); }
+/***********************
+*  Logging Utilities  *
+***********************/
+#define IMSG(...) Logger::log("info", __VA_ARGS__)
+#define DMSG(...) if (gutils::debug) { Logger::log("debug", __VA_ARGS__); }
+#define DVMSG(...) \
+    if (gutils::debug && gutils::verbose) { \
+        Logger::log("vdebug", __VA_ARGS__); \
+    }
 #define DVAR(x) DVMSG(#x ": ", (x))
+#define EMSG(...) Logger::log("error", __VA_ARGS__)
 
-/*  Prints Message iff Debug Mode is Enabled
+/*  Prints Logging Message
  *
- * Do not interface with this class directly. Use the `DMSG` macro.
+ * Do not interface with this class directly. Use the `*MSG` macros.
  * */
-class DebugPrint {
+class Logger {
     private:
         template<class T>
-        static void _debug_print(T&& x) {
+        static void _log(T&& x) {
             std::cout << x << std::endl;
         }
 
         template<class T, class... V>
-        static void _debug_print(T&& x, V&&... vargs) {
+        static void _log(T&& x, V&&... vargs) {
             std::cout << x;
-            _debug_print(vargs...);
+            _log(vargs...);
         }
 
     public:
         template<class... V>
-        static void debug_print(string const mode, V&&... vargs) {
-            if (gutils::debug) {
-                std::cout << "[" + mode + "] ";
-                _debug_print(vargs...);
-            }
+        static void log(string const mode, V&&... vargs) {
+            std::cout << "[" + gutils::toupper(mode) + "] ";
+            _log(vargs...);
         }
 };
 
@@ -94,12 +102,13 @@ class DebugPrint {
     auto x = TT.first; \
     auto y = TT.second; \
 
-template<class S, class T>
+template<class S = nullptr_t, class T = nullptr_t>
 class TwoTuple {
     public:
         S first;
         T second;
 
+        TwoTuple() : first(nullptr), second(nullptr) {};
         TwoTuple(S s, T t) : first(s), second(t) {};
 };
 

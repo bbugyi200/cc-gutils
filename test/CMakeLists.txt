@@ -49,4 +49,3 @@ glib_opts(runtests)
 target_link_libraries(runtests libgtest libgmock)
 
 target_include_directories(runtests PUBLIC ../include)
-
