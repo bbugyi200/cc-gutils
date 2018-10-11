@@ -52,9 +52,9 @@ string get_xdg_dir(string const, string const);
 
 }  // namespace gutils
 
-/*********************
-*  Debug Utilities  *
-*********************/
+/*******************
+*  Debug Helpers  *
+*******************/
 #define DMSG(...) DebugPrint::debug_print("DEBUG", __VA_ARGS__)
 #define DVMSG(...) if (gutils::verbose) { DebugPrint::debug_print("VDEBUG", __VA_ARGS__); }
 #define DVAR(x) DVMSG(#x ": ", (x))
