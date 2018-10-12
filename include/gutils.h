@@ -1,3 +1,11 @@
+/** @file gutils.h */
+
+/**  @mainpage gutils Library
+ *
+ * Global C++ utility library that I use in several of my other projects. All relevant
+ * documentation can be found in the gutils.h header.
+ * */
+
 #ifndef INCLUDED_GUTILS
 #define INCLUDED_GUTILS
 
@@ -30,48 +38,37 @@ void die(string const);
 **********************/
 namespace gutils {
     
-/* Indicates which debugging mode (if any) is enabled. */
-extern bool debug;
-extern bool verbose;
+extern bool debug;  /**< Debug Flag */
+extern bool verbose;  /**< Verbose Flag */
 
-/* Creates directory if it doesn't already exist. */
-void create_dir(string const);
-
-/* Returns XDG user directory. */
-string get_xdg_dir(string const, string const);
-
-/* Returns XDG user directory. Creates the directory if it does not exist. */
-string init_xdg_dir(string const, string const);
-
-/* Predicate that checks if directory exists. */
 bool path_exists(string const);
-
-/* Reads file contents into a string. */
+string get_xdg_dir(string const, string const);
+string init_xdg_dir(string const, string const);
 string read_file(string const);
-
-/* Enables debug mode if flag is 'true'. */
-void set_debug_mode(bool, bool);
-
-// convert string to uppercase
 string toupper(string const);
+void create_dir(string const);
+void set_debug_mode(bool, bool);
 
 }  // namespace gutils
 
 /***********************
 *  Logging Utilities  *
 ***********************/
-#define IMSG(...) Logger::log("info", __VA_ARGS__)
-#define DMSG(...) if (gutils::debug) { Logger::log("debug", __VA_ARGS__); }
+#define IMSG(...) Logger::log("info", __VA_ARGS__)  /**< INFO Logging Message */
+#define EMSG(...) Logger::log("error", __VA_ARGS__)  /**< ERROR Logging Message */
+#define DMSG(...) if (gutils::debug) { Logger::log("debug", __VA_ARGS__); }  /**< DEBUG Logging Message */
+
+/** VDEBUG Logging Message */
 #define DVMSG(...) \
     if (gutils::debug && gutils::verbose) { \
         Logger::log("vdebug", __VA_ARGS__); \
     }
-#define DVAR(x) DVMSG(#x ": ", (x))
-#define EMSG(...) Logger::log("error", __VA_ARGS__)
 
-/*  Prints Logging Message
+#define DVAR(x) DVMSG(#x " => ", (x))  /**< Evaluate Variables Value (VDEBUG) */
+
+/**  Prints Logging Message
  *
- * Do not interface with this class directly. Use the `*MSG` macros.
+ * Do not interface with this class directly. Use the `*MSG` macros instead (#IMSG, #EMSG, #DMSG, etc.).
  * */
 class Logger {
     private:
@@ -97,19 +94,24 @@ class Logger {
 /***********************************
 *  N-ary Tuples as Return Values  *
 ***********************************/
-#define Unpack(x, y, fcall) \
+/** Unpacks TwoTuple Object */
+#define Unpack(a, b, fcall) \
     auto TT = fcall; \
-    auto x = TT.first; \
-    auto y = TT.second; \
+    auto a = TT.a; \
+    auto b = TT.b; \
 
+/**  Used to Return Two Values from a Function
+ *
+ * Use the #Unpack macro to unpack these values from function call results.
+ * */
 template<class S = nullptr_t, class T = nullptr_t>
 class TwoTuple {
     public:
-        S first;
-        T second;
+        S a;
+        T b;
 
-        TwoTuple() : first(nullptr), second(nullptr) {};
-        TwoTuple(S s, T t) : first(s), second(t) {};
+        TwoTuple() : a(nullptr), b(nullptr) {};
+        TwoTuple(S s, T t) : a(s), b(t) {};
 };
 
 #endif /* INCLUDED_GUTILS */

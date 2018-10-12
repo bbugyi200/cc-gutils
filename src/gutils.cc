@@ -1,11 +1,10 @@
+/** @file gutils.cc */
+
 #include <sys/types.h>
 #include <sys/stat.h>
 
 #include <gutils.h>
 
-/**********************
-*  Static Functions  *
-**********************/
 static string get_xdg_user_dir(char const *envvar, string const local_path,
                                string const project_name) {
     char const *user = getenv("USER");
@@ -27,9 +26,8 @@ static string get_xdg_user_dir(char const *envvar, string const local_path,
     return xdg_path;
 }
 
-/**********************
-*  gutils Namespace  *
-**********************/
+
+/** @namespace gutils Namespace for gutils library. */
 namespace gutils
 {
 
@@ -37,6 +35,11 @@ bool debug = false;
 bool verbose = false;
 
 
+/**  Sets Logging Mode (INFO, DEBUG, or VDEBUG).
+ *
+ * @param debug_flag Enable debugging.
+ * @param verbose_flag Enable verbose output.
+ * */
 void set_debug_mode(bool debug_flag, bool verbose_flag) {
     debug = debug_flag;
     verbose = verbose_flag;
@@ -44,23 +47,39 @@ void set_debug_mode(bool debug_flag, bool verbose_flag) {
     DVMSG("Verbose output has been enabled.");
 }
 
+/** Creates directory if it does not already exist.
+ *
+ * @param dirname The directory to create.
+ */
 void create_dir(string const dirname) {
     if (!path_exists(dirname)) {
         mkdir(dirname.c_str(), 0700);
     }
 }
 
+/**
+ * @param s String to make uppercase.
+ * @return Uppercase string.
+ * */
 string toupper(string const s) {
     string S = s;
     std::transform(S.begin(), S.end(), S.begin(), ::toupper);
     return S;
 }
 
+/**
+ * @param dirname Directory name.
+ * @return True if directory exists. False otherwise.
+ * */
 bool path_exists(string const dirname) {
     struct stat st = {0};
     return stat(dirname.c_str(), &st) != -1;
 }
 
+/**
+ * @param filename File to read.
+ * @return File contents.
+ * */
 string read_file(string const filename) {
     char *out;
     GError *e = nullptr;
@@ -77,12 +96,18 @@ string read_file(string const filename) {
     return out;
 }
 
+/** Wrapper for ::get_xdg_dir that creates the XDG directory if it does not already exist. */
 string init_xdg_dir(string const project_name, string const dirtype) {
     string dirname = get_xdg_dir(project_name, dirtype);
     create_dir(dirname);
     return dirname;
 }
 
+/**
+ * @param project_name Name of the program that will use this directory.
+ * @param dirtype XDG Directory Type (config | data | runtime).
+ * @return XDG User Directory
+ * */
 string get_xdg_dir(string const project_name, string const dirtype) {
     if (dirtype == "config") {
         return get_xdg_user_dir("XDG_CONFIG_HOME", ".config", project_name);
