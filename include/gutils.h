@@ -9,9 +9,9 @@
 #ifndef INCLUDED_GUTILS
 #define INCLUDED_GUTILS
 
-/**************
-*  Includes  *
-**************/
+/**********************
+*  Included Headers  *
+**********************/
 #include <algorithm>
 #include <fstream>
 #include <glib.h>
@@ -96,9 +96,10 @@ std::string init_xdg_dir(std::string const&, std::string const&);
 /** @namespace gutils::logging Global Logging Utilities */
 namespace logging
 {
-    
-extern bool debug;  /**< Debug Flag */
-extern bool verbose;  /**< Verbose Flag */
+
+enum LogLevel { INFO, DEBUG, VDEBUG };  /**< Available Log Levels */
+
+extern LogLevel log_level;  /**< Global Logging Level */
 
 /**  Prints Logging Messages.
  *
@@ -126,9 +127,12 @@ class Logger {
         }
 };
 
-/**  Sets Implicit Logging Mode (INFO, DEBUG, or VDEBUG).
+/**  Sets Logging Mode (INFO, DEBUG, or VDEBUG).
  *
  * Defaults to INFO if `@debug_flag` and `@verbose_flag` are both false.
+ *
+ * @sideeffects
+ * @li Modifies ::log_level.
  *
  * @param debug_flag Enable debugging.
  * @param verbose_flag Enable verbose output.
@@ -150,13 +154,18 @@ using gutils::die;
 ************/
 #define IMSG(...) gutils::logging::Logger::log("info", __VA_ARGS__)  /**< Send INFO Logging Message. */
 #define EMSG(...) gutils::logging::Logger::log("error", __VA_ARGS__)  /**< Send ERROR Logging Message. */
-#define DMSG(...) if (gutils::logging::debug) { gutils::logging::Logger::log("debug", __VA_ARGS__); }  /**< Send DEBUG Logging Message. */
+
+/** Send DEBUG Logging Message. */
+#define DMSG(...) \
+    if (gutils::logging::log_level >= gutils::logging::DEBUG) { \
+        gutils::logging::Logger::log("debug", __VA_ARGS__); \
+    }
 
 #define DVEVAL(x) DVMSG(#x " => ", (x))  /**< Evaluates Expression (VDEBUG). */
 
 /** Send VDEBUG Logging Message. */
 #define DVMSG(...) \
-    if (gutils::logging::debug && gutils::logging::verbose) { \
+    if (gutils::logging::log_level >= gutils::logging::VDEBUG) { \
         gutils::logging::Logger::log("vdebug", __VA_ARGS__); \
     }
 

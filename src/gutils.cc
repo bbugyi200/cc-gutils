@@ -42,12 +42,13 @@ std::string toupper(std::string const &s) {
 namespace logging
 {
 
-bool debug = false;
-bool verbose = false;
+LogLevel log_level = INFO;
 
 void set_log_level(bool debug_flag, bool verbose_flag) {
-    debug = debug_flag;
-    verbose = verbose_flag;
+    log_level = debug_flag && verbose_flag ? VDEBUG
+                : debug_flag               ? DEBUG
+                : INFO;
+
     DMSG("Debug mode has been enabled.");
     DVMSG("Verbose output has been enabled.");
 }
