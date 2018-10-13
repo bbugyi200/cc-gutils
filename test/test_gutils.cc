@@ -22,7 +22,7 @@ class create_dir : public ::testing::Test {
 TEST_F(create_dir, 1)
 {
     EXPECT_FALSE(dir_exists(dirname));
-    gutils::create_dir(dirname);
+    gutils::path::create_dir(dirname);
     EXPECT_TRUE(dir_exists(dirname));
 }
 
@@ -48,7 +48,7 @@ TEST(get_xdg_dir, data)
 static void
 test_xdg_userdir(const char *dirtype, const char *local_path) {
     std::string expected = get_xdg_expected(local_path);
-    std::string actual = gutils::get_xdg_dir(project_name, dirtype);
+    std::string actual = gutils::path::get_xdg_dir(project_name, dirtype);
 
     EXPECT_EQ(expected, actual);
 }
@@ -69,7 +69,7 @@ get_xdg_expected(const char *local_path) {
 
 TEST(get_xdg_dir, runtime)
 {
-    std::string actual = gutils::get_xdg_dir(project_name, "runtime");
+    std::string actual = gutils::path::get_xdg_dir(project_name, "runtime");
     std::string expected = get_xdg_runtime_expected();
 
     EXPECT_EQ(expected, actual);
@@ -77,7 +77,7 @@ TEST(get_xdg_dir, runtime)
 
 TEST(get_xdg_dir, init)
 {
-    gutils::init_xdg_dir(project_name, "runtime");
+    gutils::path::init_xdg_dir(project_name, "runtime");
     std::string expected = get_xdg_runtime_expected();
 
     EXPECT_TRUE(dir_exists(expected.c_str()));
