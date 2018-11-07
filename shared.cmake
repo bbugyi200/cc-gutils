@@ -1,4 +1,4 @@
-function(glib_opts target)
+function(setup_glib target)
     find_package(PkgConfig REQUIRED)
     pkg_search_module(GLIB REQUIRED glib-2.0)
     target_include_directories(${target} PRIVATE ${GLIB_INCLUDE_DIRS})

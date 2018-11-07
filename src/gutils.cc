@@ -3,6 +3,9 @@
 
 #include <gutils.h>
 
+/************
+*  Static  *
+************/
 static std::string get_xdg_user_dir(char const *envvar, std::string const &local_path,
                                std::string const &project_name) {
     char const *user = getenv("USER");
@@ -24,7 +27,9 @@ static std::string get_xdg_user_dir(char const *envvar, std::string const &local
     return xdg_path;
 }
 
-
+/**********************
+*  gutils Namespace  *
+**********************/
 namespace gutils
 {
 
@@ -49,8 +54,8 @@ void set_log_level(bool debug_flag, bool verbose_flag) {
                 : debug_flag               ? DEBUG
                 : INFO;
 
-    DMSG("Debug mode has been enabled.");
-    DVMSG("Verbose output has been enabled.");
+    DMSG("Debugging output has been enabled.");
+    DVMSG("Verbose debugging output has been enabled.");
 }
 
 }  // namespace logging

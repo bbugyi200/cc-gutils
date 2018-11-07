@@ -25,7 +25,7 @@
 /**********************
 *  gutils Namespace  *
 **********************/
-/** @namespace gutils Namespace for gutils library. */
+/** Namespace for gutils library. */
 namespace gutils {
 
 /**  Used to Return Two Values from a Function.
@@ -55,7 +55,7 @@ void die(std::string const &msg, int ec = 1);
  * */
 std::string toupper(std::string const &s);
 
-/** @namespace gutils::path Global Filesystem Utilities */
+/** Global Filesystem Utilities */
 namespace path
 {
 
@@ -71,7 +71,8 @@ std::string read_file(std::string const &filename);
  */
 void create_dir(std::string const &dirname);
 
-/**
+/**  Checks if the given directory exists.
+ *
  * @param dirname Directory name.
  * @return TRUE if directory exists. FALSE otherwise.
  * */
@@ -93,7 +94,7 @@ std::string init_xdg_dir(std::string const&, std::string const&);
 
 }  // namespace path
 
-/** @namespace gutils::logging Global Logging Utilities */
+/** Global Logging Utilities */
 namespace logging
 {
 
@@ -109,21 +110,21 @@ extern LogLevel log_level;  /**< Global Logging Level */
 class Logger {
     private:
         template<class T>
-        static void _log(T&& x) {
+        static void print_values(T&& x) {
             std::cout << x << std::endl;
         }
 
         template<class T, class... V>
-        static void _log(T&& x, V&&... vargs) {
+        static void print_values(T&& x, V&&... vargs) {
             std::cout << x;
-            _log(vargs...);
+            print_values(vargs...);
         }
 
     public:
         template<class... V>
         static void log(std::string const &mode, V&&... vargs) {
             std::cout << "[" + gutils::toupper(mode) + "] ";
-            _log(vargs...);
+            print_values(vargs...);
         }
 };
 

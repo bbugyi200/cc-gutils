@@ -45,7 +45,7 @@ file(GLOB SOURCES "../src/[^main]*.cc")
 file(GLOB TESTS "*.cc")
 add_executable(runtests ${SOURCES} ${TESTS})
 
-glib_opts(runtests)
+setup_glib(runtests)
 target_link_libraries(runtests libgtest libgmock)
 
 target_include_directories(runtests PUBLIC ../include)
